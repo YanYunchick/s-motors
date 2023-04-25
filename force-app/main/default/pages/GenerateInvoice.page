@@ -1,0 +1,11 @@
+<apex:page standardController="Opportunity"  extensions="OpportunityInvoiceExtension" showHeader="false" title="Quotation PDF" showQuickActionVfHeader="false" >
+    <apex:form >    
+        <center>   
+            <apex:commandButton action="{!attachPDF}"  value="Save Attachment"/> 
+            <apex:commandButton action="{!cancel}"  value="Cancel" /> </center> <br/>
+        <center>
+            <apex:iframe height="500px"  width="700px" src="/apex/Invoice?id={!oppId}"/>
+        </center>
+    </apex:form><br/><br/><br/>
+    <footer class="slds-modal__footer"></footer>
+</apex:page>

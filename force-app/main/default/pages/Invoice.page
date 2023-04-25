@@ -1,0 +1,119 @@
+<apex:page standardController="Opportunity" extensions="OpportunityInvoiceExtension" applyBodyTag="false" renderAs="pdf">
+<head>
+    <style type="text/css" media="print">
+        @page {
+            @top-center {
+                content: element(header);
+            }
+            @bottom-left {
+                content: element(footer);
+            }
+            size: A4 portrait;
+            margin-top:5cm;
+            margin-bottom:5cm; 
+        }
+        table {
+            -fs-table-paginate: paginate;
+            border-spacing: 0;
+        }
+        td {
+            border-right: 0.5px solid black;
+            border-left: 0.5px solid black;
+        }
+        th {
+            border: none;
+        }
+        .whitebg {
+            background-color: #fff;
+        }
+        .greybg {
+            background-color: #a25a5a;
+        }
+        div {
+            font-family:sans-serif;
+        }
+        div.header {
+            display: block;
+            padding: 5px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            position: running(header);
+        }
+        div.footer {
+            padding: 5px;
+            position: running(footer);
+        }
+    </style>
+</head>
+    <div class="header">
+        <hr style="height: 18px; color:#fff; background-color:#ff4500; border: none"/>
+        <div style="display: inline-block;">
+            <apex:image id="logo" value="{!$Resource.logo}" style="height: 60px; width: 60px; float: left; margin-top: 15px"/>
+            <ul style="list-style-type: none; padding-left: 70px; width: 180px;">
+                <li><apex:outputText value="{!$Organization.Name}"/></li>
+                <li style="padding-bottom: 5px"><small><apex:outputText value="{!$Organization.Country}"/>,&nbsp;
+                    <apex:outputText value="{!$Organization.City}"/>,&nbsp;
+                    <apex:outputText value="{!$Organization.Street}"/></small></li>
+                <li><small><apex:outputField value="{!Opportunity.Owner.Name}"/></small></li>
+            </ul>
+        </div>
+        <div style="display: inline-block;">
+            <ul style="list-style-type: none; text-align: center; width: 150px; padding-left: 200px;">
+                <li style="padding-bottom: 8px">INVOICE</li>
+                <li style="color:#6071F5; border-bottom: 0.5px solid #6071F5; padding: 5px 15px;">
+                    <apex:outputText value="{!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}"/>
+                </li>
+                <li style="color:#6071F5; border-bottom: 0.5px solid #6071F5; padding: 5px 15px;">
+                    <apex:outputField value="{!Opportunity.InvoiceNumber__c}"/>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+    <div class="footer">
+        <div style="height: 18px; color:#fff; background-color:#ff4500; text-align: center;">
+            <apex:outputText value="{!$Organization.Name}"/>
+        </div>
+    </div>
+    <div class="content">
+        <ul style="list-style-type: none; padding: 0; margin: 0 0 30px 0;">
+            <li style="color:#6071F5; border-bottom: 0.5px solid #6071F5; padding: 5px 0px;">BILL TO</li>
+            <li style="padding-top:10px;"><apex:outputField value="{!primaryContact.Name}"/></li>
+            <li><apex:outputField value="{!Opportunity.Account.Name}"/></li>
+            <li><apex:outputField value="{!Opportunity.Account.Phone}"/></li>
+            <li><apex:outputField value="{!primaryContact.Email}"/></li>
+        </ul>
+        <apex:variable value="{!1}" var="counter" />
+        <table cellpadding="7" style="font-size:14px; width:100%;">
+            <THEAD>
+                <tr style="color:#fff; background-color:#ff4500;">
+                    <th style="text-align:center; padding-right:100px;">PRODUCT NAME</th>
+                    <th style="text-align:center;">QTY</th>
+                    <th style="text-align:center;">UNIT PRICE</th>
+                    <th style="text-align:center;">TOTAL</th>
+                </tr>
+            </THEAD>
+            <apex:repeat value="{!Opportunity.OpportunityLineItems}" var="prod">
+                <TBODY>
+                    <tr style="background-color:{!IF(mod(counter,2)==0, '#f2f2f2','#fff')}">
+                        <td style="padding-right: 100px;"><apex:outputField value="{!prod.Product2.Name}"/></td>
+                        <td style="text-align:center;"><apex:outputField value="{!prod.Quantity}"/></td>
+                        <td style="text-align:right;"><apex:outputField value="{!prod.UnitPrice}"/></td>
+                        <td style="text-align:right;"><apex:outputField value="{!prod.TotalPrice}"/></td>
+                    </tr>
+                </TBODY>
+                <apex:variable value="{!counter+1}" var="counter" />
+            </apex:repeat>
+            <tr>
+                <td style="border-top: 1px solid black; border-right: none; border-left: none;"></td>
+                <td style="border-top: 1px solid black; border-right: none; border-left: none;"></td>
+                <td style="text-align:right; font-size: 20px; border-top: 1px solid black; border-right: none; border-left: none;">
+                    <b>Balance Due</b>
+                </td>
+                <td style="text-align:right; background-color: #e58787; font-size: 20px; border-top: 1px solid black; border-left: none;">
+                    <b><apex:outputField value="{!Opportunity.Amount}"/></b>
+                </td>
+            </tr>
+        </table>
+    </div>
+</apex:page>
