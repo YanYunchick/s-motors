@@ -52,7 +52,7 @@ public with sharing class OpportunityInvoiceExtension {
         cv.VersionData = bdata;
 
         if (attachedFile != null) {
-            cv.ContentDocumentId= attachedFile.ContentDocumentId;
+            cv.ContentDocumentId = attachedFile.ContentDocumentId;
         }
         insert cv;
         if (attachedFile == null) {
@@ -80,9 +80,9 @@ public with sharing class OpportunityInvoiceExtension {
     }
 
     @AuraEnabled(cacheable=true)
-    public static String getEmailBody(){
+    public static String getEmailBody(String templateName){
         return [SELECT HtmlValue
-                FROM EmailTemplate WHERE Name = 'Invoice Email Template'].HtmlValue;
+                FROM EmailTemplate WHERE Name = :templateName].HtmlValue;
     }
 
     @AuraEnabled(cacheable=true)
@@ -106,7 +106,6 @@ public with sharing class OpportunityInvoiceExtension {
 
     @AuraEnabled
     public static void sendEmail(String emailBody, String recordId){
-        Messaging.reserveSingleEmailCapacity(1);
         try {
             messaging.SingleEmailMessage mail = new messaging.SingleEmailMessage();
             Messaging.EmailFileAttachment attachedInvoice = new Messaging.EmailFileAttachment();
@@ -116,7 +115,8 @@ public with sharing class OpportunityInvoiceExtension {
                 attachedInvoice.setFileName('Invoice.pdf');
                 mail.setFileAttachments(new Messaging.EmailFileAttachment[] {attachedInvoice});
             }
-            mail.setToAddresses(new String[]{'ganakine911@gmail.com'});
+            String emailAddress = getPrimaryContact(recordId).Email;
+            mail.setToAddresses(new String[]{emailAddress});
             mail.setReplyTo('yan.yunchick@gmail.com');
             mail.setSenderDisplayName('SuccessMotors');
             mail.setSubject(getInvoiceNumber(recordId));

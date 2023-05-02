@@ -38,7 +38,7 @@ export default class SendInvoice extends NavigationMixin(LightningElement) {
         return getFieldValue(this.opportunity.data, INVOICE_NUMBER);
     }
 
-    @wire(getEmailBody)
+    @wire(getEmailBody, {templateName: 'Invoice Email Template'})
     emailBody;
 
     @wire(getPrimaryContact, { recordId: '$recordId' })
