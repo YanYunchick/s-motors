@@ -8,6 +8,6 @@
     <targetConfigs>
         <targetConfig targets="lightning__RecordAction">
             <actionType>ScreenAction</actionType>
-        </targetConfig>
+        </targetConfig> 
     </targetConfigs>
 </LightningComponentBundle>

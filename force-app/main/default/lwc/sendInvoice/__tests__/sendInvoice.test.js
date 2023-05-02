@@ -20,6 +20,6 @@ describe('c-send-invoice', () => {
 
         // Assert
         // const div = element.shadowRoot.querySelector('div');
-        expect(1).toBe(1);
+        expect(1).toBe(1); 
     });
 });
