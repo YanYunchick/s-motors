@@ -75,18 +75,18 @@ public with sharing class OpportunityInvoiceExtension {
         return Pdf;
     }
 
-    public static String getInvoiceNumber(String recordId){
-        return [SELECT InvoiceNumber__c FROM Opportunity WHERE Id = :recordId].InvoiceNumber__c;
+    public static String getInvoiceNumber(Id recordId){
+        return [SELECT InvoiceNumber__c FROM Opportunity WHERE Id = :recordId]?.InvoiceNumber__c;
     }
 
     @AuraEnabled(cacheable=true)
     public static String getEmailBody(String templateName){
         return [SELECT HtmlValue
-                FROM EmailTemplate WHERE Name = :templateName].HtmlValue;
+                FROM EmailTemplate WHERE Name = :templateName]?.HtmlValue;
     }
 
     @AuraEnabled(cacheable=true)
-    public static Contact getPrimaryContact(String recordId){
+    public static Contact getPrimaryContact(Id recordId){
         OpportunityContactRole ocr = [
             SELECT Id, ContactId
             FROM OpportunityContactRole 
@@ -99,13 +99,13 @@ public with sharing class OpportunityInvoiceExtension {
     }
 
     @AuraEnabled(cacheable=true)
-    public static String getAttachedInvoiceId(String recordId){
+    public static String getAttachedInvoiceId(Id recordId){
         ContentVersion attachedFile = getAttachedInvoice(recordId);
-        return attachedFile == null ? null : attachedFile.ContentDocumentId;
+        return attachedFile?.ContentDocumentId;
     }
 
     @AuraEnabled
-    public static void sendEmail(String emailBody, String recordId){
+    public static void sendEmail(String emailBody, Id recordId){
         try {
             messaging.SingleEmailMessage mail = new messaging.SingleEmailMessage();
             Messaging.EmailFileAttachment attachedInvoice = new Messaging.EmailFileAttachment();
@@ -117,7 +117,7 @@ public with sharing class OpportunityInvoiceExtension {
             }
             String emailAddress = getPrimaryContact(recordId).Email;
             mail.setToAddresses(new String[]{emailAddress});
-            mail.setReplyTo('yan.yunchick@gmail.com');
+            mail.setReplyTo('response_to_invoice@ur48b6vsqv80bajosqc4tkkwn68lur52xzfa6vou59qpnzvoq.2w-rpwhoeaj.ap16.apex.salesforce.com');
             mail.setSenderDisplayName('SuccessMotors');
             mail.setSubject(getInvoiceNumber(recordId));
             mail.setHtmlBody(emailBody);
@@ -127,7 +127,7 @@ public with sharing class OpportunityInvoiceExtension {
         }
     }
 
-    public static ContentVersion getAttachedInvoice(String recordId) {
+    public static ContentVersion getAttachedInvoice(Id recordId) {
         String docName = getInvoiceNumber(recordId) + '.pdf';
         List<ContentDocumentLink> files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId];
         List<ID> fileIDs = new List<ID>();

@@ -44,7 +44,7 @@ export default class SendInvoice extends NavigationMixin(LightningElement) {
     @wire(getPrimaryContact, { recordId: '$recordId' })
     wiredGetPrimaryContact({ error, data }) {
         if (data) {
-            this.primaryContact = JSON.parse(JSON.stringify(data));
+            this.primaryContact = data;
             this.hasData = true;
         } else if (error) {
             console.log('error', JSON.parse(JSON.stringify(error)));
@@ -55,7 +55,6 @@ export default class SendInvoice extends NavigationMixin(LightningElement) {
     invoicePDFId;
 
     previewAction() {
-        console.log(this.invoicePDFId.data);
         this[NavigationMixin.Navigate]({ 
             type:'standard__namedPage',
             attributes:{ 

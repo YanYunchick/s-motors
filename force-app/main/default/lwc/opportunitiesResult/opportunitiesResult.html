@@ -1,0 +1,33 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card title="Work Result" icon-name="standard:account">
+        <div class="slds-var-m-around_medium">
+            <div if:false={recordId}>
+                <lightning-input 
+                    type="search" 
+                    onchange={handleSearchTermChange} 
+                    class="slds-var-m-bottom_small"          
+                    label="Search" 
+                    placeholder="Searching by account name or opportunity sum..."
+                    value={searchTerm}>
+                </lightning-input>
+            </div>
+            <template if:true={visibleAccounts}>
+                <lightning-accordion for:each={visibleAccounts} for:item="item" key={item.key} allow-multiple-sections-open="true">
+                    <lightning-accordion-section key={item.key} name={item.key} label={item.key}>
+                        <lightning-datatable  
+                            key-field="id"
+                            data={item.value}
+                            hide-checkbox-column=true
+                            onrowaction={showProducts}
+                            columns={columns}>
+                        </lightning-datatable>
+                    </lightning-accordion-section>
+                </lightning-accordion>
+            </template>
+            <div slot="footer" class="slds-var-m-vertical_medium" if:false={recordId}>
+                <c-pagination records={totalAccounts} onupdate={updateAccountHandler}></c-pagination>
+            </div>
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,17 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <template if:true={hasData}>
+        <lightning-modal-header label="List"></lightning-modal-header>
+        <lightning-modal-body>
+            <lightning-datatable 
+                key-field="id"
+                data={content}
+                hide-checkbox-column=true
+                columns={structure}>
+            </lightning-datatable>
+        </lightning-modal-body>
+        <lightning-modal-footer>
+            <lightning-button label="Close" onclick={handleClose}></lightning-button>
+        </lightning-modal-footer>
+    </template>
+</template>
