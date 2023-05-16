@@ -1,19 +1,27 @@
 public with sharing class OpportunitiesResultController {
     static Pattern decimalPattern = Pattern.compile('^[-+]?\\d+(\\.\\d*)?$');
 
-    @AuraEnabled(cacheable=true)
-    public static Map<String, List<Opportunity>> getAllAccounts(){
+    public static Map<String, List<Opportunity>> getAllAccounts() {
         Map<String, List<Opportunity>> result = new Map<String, List<Opportunity>>();
-        for(Account acc: [SELECT Name, ClosedWonOpportunitySum__c FROM Account ORDER BY ClosedWonOpportunitySum__c DESC]) {
-            result.put(acc.Name + ' $' + acc.ClosedWonOpportunitySum__c.setScale(2), 
-                        [SELECT Name, CreatedDate, CloseDate, Amount 
-                        FROM Opportunity 
-                        WHERE StageName = 'Closed Won' 
-                        AND AccountId = :acc.Id
-                        WITH SECURITY_ENFORCED]);
+        Set<Id> accountIds = new Set<Id>();
+        for (Account acc : [SELECT Name, ClosedWonOpportunitySum__c
+                            FROM Account
+                            ORDER BY ClosedWonOpportunitySum__c DESC]) {
+            accountIds.add(acc.Id);
+            result.put(acc.Name + ' $' + acc.ClosedWonOpportunitySum__c.setScale(2), new List<Opportunity>());
         }
-        return result;
         
+        List<Opportunity> opportunities = [SELECT Name, CreatedDate, CloseDate, Amount, Account.Name, Account.ClosedWonOpportunitySum__c
+                                           FROM Opportunity
+                                           WHERE StageName = 'Closed Won'
+                                           AND AccountId IN :accountIds
+                                           WITH SECURITY_ENFORCED];
+        
+        for (Opportunity opp : opportunities) {
+            result.get(opp.Account.Name + ' $' + opp.Account.ClosedWonOpportunitySum__c).add(opp);
+        }
+        
+        return result;
     }
 
     @AuraEnabled(cacheable=true)
@@ -22,27 +30,38 @@ public with sharing class OpportunitiesResultController {
         if (searchTerm == '') {
             return getAllAccounts();
         }
+        
         Map<String, List<Opportunity>> result = new Map<String, List<Opportunity>>();
         List<Account> accs = new List<Account>();
-        if(!decimalPattern.matcher(searchTerm).find()){
+        Set<Id> accountIds = new Set<Id>();
+        
+        if (!decimalPattern.matcher(searchTerm).find()) {
             searchTerm = '%' + searchTerm + '%';
-            accs = [SELECT Name, ClosedWonOpportunitySum__c 
+            accs = [SELECT Name, ClosedWonOpportunitySum__c
                     FROM Account WHERE Name LIKE :searchTerm
                     ORDER BY ClosedWonOpportunitySum__c DESC];
         } else {
             Decimal sum = Decimal.valueOf(searchTerm);
-            accs = [SELECT Name, ClosedWonOpportunitySum__c 
+            accs = [SELECT Name, ClosedWonOpportunitySum__c
                     FROM Account WHERE ClosedWonOpportunitySum__c >= :sum
                     ORDER BY ClosedWonOpportunitySum__c DESC];
-        } 
-        for(Account acc: accs) {
-            result.put(acc.Name + ' $' + acc.ClosedWonOpportunitySum__c.setScale(2), 
-                        [SELECT Name, CreatedDate, CloseDate, Amount 
-                        FROM Opportunity 
-                        WHERE StageName = 'Closed Won' 
-                        AND AccountId = :acc.Id
-                        WITH SECURITY_ENFORCED]);
         }
+        
+        for (Account acc : accs) {
+            accountIds.add(acc.Id);
+            result.put(acc.Name + ' $' + acc.ClosedWonOpportunitySum__c.setScale(2), new List<Opportunity>());
+        }
+        
+        List<Opportunity> opportunities = [SELECT Name, CreatedDate, CloseDate, Amount, Account.Name, Account.ClosedWonOpportunitySum__c
+                                           FROM Opportunity
+                                           WHERE StageName = 'Closed Won'
+                                           AND AccountId IN :accountIds
+                                           WITH SECURITY_ENFORCED];
+        
+        for (Opportunity opp : opportunities) {
+            result.get(opp.Account.Name + ' $' + opp.Account.ClosedWonOpportunitySum__c).add(opp);
+        }
+        
         return result;
     }
 
