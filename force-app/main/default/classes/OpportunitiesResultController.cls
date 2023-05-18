@@ -14,8 +14,7 @@ public with sharing class OpportunitiesResultController {
         List<Opportunity> opportunities = [SELECT Name, CreatedDate, CloseDate, Amount, Account.Name, Account.ClosedWonOpportunitySum__c
                                            FROM Opportunity
                                            WHERE StageName = 'Closed Won'
-                                           AND AccountId IN :accountIds
-                                           WITH SECURITY_ENFORCED];
+                                           AND AccountId IN :accountIds];
         
         for (Opportunity opp : opportunities) {
             result.get(opp.Account.Name + ' $' + opp.Account.ClosedWonOpportunitySum__c).add(opp);
@@ -55,8 +54,7 @@ public with sharing class OpportunitiesResultController {
         List<Opportunity> opportunities = [SELECT Name, CreatedDate, CloseDate, Amount, Account.Name, Account.ClosedWonOpportunitySum__c
                                            FROM Opportunity
                                            WHERE StageName = 'Closed Won'
-                                           AND AccountId IN :accountIds
-                                           WITH SECURITY_ENFORCED];
+                                           AND AccountId IN :accountIds];
         
         for (Opportunity opp : opportunities) {
             result.get(opp.Account.Name + ' $' + opp.Account.ClosedWonOpportunitySum__c).add(opp);
@@ -73,8 +71,7 @@ public with sharing class OpportunitiesResultController {
                         [SELECT Name, CreatedDate, CloseDate, Amount 
                         FROM Opportunity 
                         WHERE StageName = 'Closed Won' 
-                        AND AccountId = :acc.Id
-                        WITH SECURITY_ENFORCED]);
+                        AND AccountId = :acc.Id]);
         return result;
     }
 

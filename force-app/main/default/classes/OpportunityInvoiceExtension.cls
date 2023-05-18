@@ -14,7 +14,6 @@ public with sharing class OpportunityInvoiceExtension {
             FROM OpportunityContactRole 
             WHERE (isPrimary=True 
             AND OpportunityId = :oppId)
-            WITH SECURITY_ENFORCED
             LIMIT 1
         ];
         return ocr.ContactId;
@@ -26,7 +25,6 @@ public with sharing class OpportunityInvoiceExtension {
             SELECT Name, Phone, Email 
             FROM Contact 
             WHERE Id = :conId 
-            WITH SECURITY_ENFORCED
             LIMIT 1
        ];
     }
@@ -92,7 +90,6 @@ public with sharing class OpportunityInvoiceExtension {
             FROM OpportunityContactRole 
             WHERE (isPrimary=True 
             AND OpportunityId = :recordId)
-            WITH SECURITY_ENFORCED
             LIMIT 1
         ];
         return [SELECT Email, Name FROM Contact WHERE Id = :ocr.ContactId LIMIT 1];
