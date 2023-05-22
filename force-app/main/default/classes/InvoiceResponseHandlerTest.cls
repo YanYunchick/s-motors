@@ -16,6 +16,9 @@ private class InvoiceResponseHandlerTest {
         handler.handleInboundEmail(email, env);
         Opportunity result = [SELECT StageName FROM Opportunity WHERE Id = :opp.Id];
         System.assertEquals('Qualification', result.StageName);
+        handler.handleInboundEmail(email, env);
+        result = [SELECT StageName FROM Opportunity WHERE Id = :opp.Id];
+        System.assertEquals('Needs Analysis', result.StageName);
         email.plainTextBody = 'rejected';
         handler.handleInboundEmail(email, env);
         result = [SELECT StageName FROM Opportunity WHERE Id = :opp.Id];

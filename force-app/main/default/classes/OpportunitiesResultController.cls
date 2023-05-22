@@ -6,6 +6,7 @@ public with sharing class OpportunitiesResultController {
         Set<Id> accountIds = new Set<Id>();
         for (Account acc : [SELECT Name, ClosedWonOpportunitySum__c
                             FROM Account
+                            WITH SECURITY_ENFORCED
                             ORDER BY ClosedWonOpportunitySum__c DESC]) {
             accountIds.add(acc.Id);
             result.put(acc.Name + ' $' + acc.ClosedWonOpportunitySum__c.setScale(2), new List<Opportunity>());
@@ -14,7 +15,8 @@ public with sharing class OpportunitiesResultController {
         List<Opportunity> opportunities = [SELECT Name, CreatedDate, CloseDate, Amount, Account.Name, Account.ClosedWonOpportunitySum__c
                                            FROM Opportunity
                                            WHERE StageName = 'Closed Won'
-                                           AND AccountId IN :accountIds];
+                                           AND AccountId IN :accountIds
+                                           WITH SECURITY_ENFORCED];
         
         for (Opportunity opp : opportunities) {
             result.get(opp.Account.Name + ' $' + opp.Account.ClosedWonOpportunitySum__c).add(opp);
@@ -38,11 +40,13 @@ public with sharing class OpportunitiesResultController {
             searchTerm = '%' + searchTerm + '%';
             accs = [SELECT Name, ClosedWonOpportunitySum__c
                     FROM Account WHERE Name LIKE :searchTerm
+                    WITH SECURITY_ENFORCED
                     ORDER BY ClosedWonOpportunitySum__c DESC];
         } else {
             Decimal sum = Decimal.valueOf(searchTerm);
             accs = [SELECT Name, ClosedWonOpportunitySum__c
                     FROM Account WHERE ClosedWonOpportunitySum__c >= :sum
+                    WITH SECURITY_ENFORCED
                     ORDER BY ClosedWonOpportunitySum__c DESC];
         }
         
@@ -54,7 +58,8 @@ public with sharing class OpportunitiesResultController {
         List<Opportunity> opportunities = [SELECT Name, CreatedDate, CloseDate, Amount, Account.Name, Account.ClosedWonOpportunitySum__c
                                            FROM Opportunity
                                            WHERE StageName = 'Closed Won'
-                                           AND AccountId IN :accountIds];
+                                           AND AccountId IN :accountIds
+                                           WITH SECURITY_ENFORCED];
         
         for (Opportunity opp : opportunities) {
             result.get(opp.Account.Name + ' $' + opp.Account.ClosedWonOpportunitySum__c).add(opp);
@@ -71,12 +76,14 @@ public with sharing class OpportunitiesResultController {
                         [SELECT Name, CreatedDate, CloseDate, Amount 
                         FROM Opportunity 
                         WHERE StageName = 'Closed Won' 
-                        AND AccountId = :acc.Id]);
+                        AND AccountId = :acc.Id
+                        WITH SECURITY_ENFORCED]);
         return result;
     }
 
     @AuraEnabled(cacheable=true)
     public static List<OpportunityLineItem> getOpportunityProducts(Id oppId){
-        return [SELECT Id, Name, Quantity, TotalPrice FROM OpportunityLineItem WHERE OpportunityId = :oppId];
+        return [SELECT Id, Name, Quantity, TotalPrice FROM OpportunityLineItem 
+                WHERE OpportunityId = :oppId WITH SECURITY_ENFORCED];
     }
 }

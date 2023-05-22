@@ -80,7 +80,7 @@ public with sharing class OpportunityInvoiceExtension {
     @AuraEnabled(cacheable=true)
     public static String getEmailBody(String templateName){
         return [SELECT HtmlValue
-                FROM EmailTemplate WHERE Name = :templateName]?.HtmlValue;
+                FROM EmailTemplate WHERE Name = :templateName WITH SECURITY_ENFORCED]?.HtmlValue;
     }
 
     @AuraEnabled(cacheable=true)
@@ -90,9 +90,10 @@ public with sharing class OpportunityInvoiceExtension {
             FROM OpportunityContactRole 
             WHERE (isPrimary=True 
             AND OpportunityId = :recordId)
+            WITH SECURITY_ENFORCED
             LIMIT 1
         ];
-        return [SELECT Email, Name FROM Contact WHERE Id = :ocr.ContactId LIMIT 1];
+        return [SELECT Email, Name FROM Contact WHERE Id = :ocr.ContactId WITH SECURITY_ENFORCED LIMIT 1];
     }
 
     @AuraEnabled(cacheable=true)
@@ -134,7 +135,8 @@ public with sharing class OpportunityInvoiceExtension {
         List<ContentVersion> cv = [SELECT VersionData, ContentDocumentId, ContentDocument.Title
                                     FROM ContentVersion 
                                     WHERE ContentDocumentId IN :fileIDs 
-                                    AND ContentDocument.Title = :docName LIMIT 1];
+                                    AND ContentDocument.Title = :docName AND
+                                    IsLatest = true LIMIT 1];
         if(cv.IsEmpty()) {
             return null;
         }

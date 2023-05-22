@@ -14,6 +14,10 @@ export default class Pagination extends LightningElement {
             this.totalRecords = data;
             this.recordSize = Number(this.recordSize);
             this.totalPage = Math.ceil(data.length/this.recordSize);
+            if(this.totalPage === 0) {
+                this.totalPage = 1;
+            }
+            this.currentPage = 1;
             this.updateRecords();
         }
     }

@@ -5,7 +5,9 @@ export default class ModalList extends LightningModal {
     @api structure;
     hasData = false;
     connectedCallback() {
-        this.hasData = true;
+        if(this.content.length != 0) {
+            this.hasData = true;
+        }
     }
     handleClose() {
         this.close('close');

@@ -1,4 +1,8 @@
 global class InvoiceResponseHandler implements Messaging.InboundEmailHandler {
+    global List<String> OpportunityStages = new List<String> {'Prospecting', 'Qualification', 'Needs Analysis',
+                                                        'Value Proposition', 'Id. Decision Makers',
+                                                        'Perception Analysis', 'Proposal/Price Quote',
+                                                        'Negotiation/Review', 'Closed Won'};
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope env ) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
         String subject = '';
@@ -14,8 +18,8 @@ global class InvoiceResponseHandler implements Messaging.InboundEmailHandler {
                 }
                 Opportunity opp = [SELECT StageName FROM Opportunity WHERE InvoiceNumber__c = :subject];
                 responseText = responseText.toLowerCase();
-                if(responseText.contains('approved') && opp.StageName == 'Prospecting') {
-                    opp.StageName = 'Qualification';
+                if(responseText.contains('approved') && opp.StageName != 'Closed Won') {
+                    opp.StageName = OpportunityStages[OpportunityStages.indexOf(opp.StageName) + 1];
                     update opp;
                 }else if(responseText.contains('rejected')){
                     opp.StageName = 'Closed Lost';
