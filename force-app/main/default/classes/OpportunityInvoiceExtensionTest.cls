@@ -5,7 +5,7 @@ private class OpportunityInvoiceExtensionTest {
         Opportunity opp = new Opportunity(Name = 'TestOpp', 
                                             StageName = 'Prospecting', 
                                             CloseDate = date.today().addMonths(2),
-                                            OwnerId = '0052w00000GM8k1AAD');
+                                            OwnerId = UserInfo.getUserId());
         insert opp;
         Contact cont = new Contact(LastName = 'TestContact', Email = 'test@gmail.com');
         insert cont;
@@ -65,7 +65,7 @@ private class OpportunityInvoiceExtensionTest {
     @IsTest
     static void testGetEmailBody(){
         EmailTemplate et = new EmailTemplate(developerName = 'test', 
-                                                FolderId = '00D2w00000RpwHoEAJ', 
+                                                FolderId = UserInfo.getUserId(), 
                                                 TemplateType= 'Text', Name = 'test', HtmlValue = 'test');
         insert et;
         System.assertEquals('test', OpportunityInvoiceExtension.getEmailBody('test'));   

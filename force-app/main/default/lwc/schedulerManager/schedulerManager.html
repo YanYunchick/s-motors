@@ -1,0 +1,38 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-modal-header label="Scheduler Manager"></lightning-modal-header>
+    <lightning-modal-body>
+        <div class="slds-text-title_bold slds-p-left_x-small slds-p-bottom_x-small">Schedule Batch</div>
+        <div class="slds-text-align_left">The component is designed to manage the distribution of birthday greetings to clients</div>
+        <abbr title="required" class="slds-required">*</abbr>
+        <span>CRON String</span>
+        <lightning-helptext 
+            content="A cron expression is a string consisting of six or seven 
+            subexpressions (fields) that describe individual details of the schedule. 
+            Cron expressions can be as simple as * * * * ? * or 
+            as complex as 0 0/5 14,18,3-39,52 ? JAN,MAR,SEP MON-FRI 2002-2010.">
+    </lightning-helptext>
+        <lightning-input 
+            type="text" 
+            value={cronString} 
+            onchange={handleChange} 
+            class="validate"
+            variant="label-hidden" 
+            required>
+        </lightning-input>
+        <p><lightning-formatted-url 
+            value="https://help.salesforce.com/s/articleView?id=sf.reports_subscription_reporting_cron.htm&type=5" 
+            tooltip="Read more about scheduling" 
+            label="Read more about scheduling"
+            target="_blank"></lightning-formatted-url></p>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button variant="Brand" label="Run Once" onclick={runOnceAction} class="slds-m-right_x-small"></lightning-button>
+        <template lwc:if={jobID}>
+            <lightning-button variant="Destructive" label="Abort Batch" onclick={abortAction}></lightning-button>
+        </template>
+        <template lwc:else>
+            <lightning-button variant="Brand" label="Schedule Batch" onclick={scheduleAction}></lightning-button>
+        </template>
+    </lightning-modal-footer>
+</template>

@@ -7,7 +7,7 @@ private class InvoiceResponseHandlerTest {
         Opportunity opp = new Opportunity(Name = 'TestOpp', 
                                             StageName = 'Prospecting', 
                                             CloseDate = date.today().addMonths(2),
-                                            OwnerId = '0052w00000GM8k1AAD');
+                                            OwnerId = UserInfo.getUserId());
         insert opp;
         Opportunity newopp = [SELECT InvoiceNumber__c FROM Opportunity WHERE Id = :opp.Id];
         email.subject = 'Re: ' + newopp.InvoiceNumber__c;
