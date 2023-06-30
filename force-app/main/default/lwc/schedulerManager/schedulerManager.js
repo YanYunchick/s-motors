@@ -1,17 +1,17 @@
-import { wire, track } from 'lwc';
+import { api } from 'lwc';
 import LightningModal from 'lightning/modal';
 import runOnceBatch from '@salesforce/apex/SchedulerManagerController.runOnceBatch';
 import abortBatch from '@salesforce/apex/SchedulerManagerController.abortBatch';
 import scheduleBatch from '@salesforce/apex/SchedulerManagerController.scheduleBatch';
 import getJobState from '@salesforce/apex/SchedulerManagerController.getJobState';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 export default class SchedulerManager extends LightningModal {
-    batchName = 'ContactBirthdayEmailBatch';
-    schedulerName = 'BatchScheduler';
+    @api batchName;
+    @api schedulerName;
     jobName = 'Birthday Email';
-    @track cronString = '';
-    // @wire(getJobState, {jobName: '$jobName'})
-    @track jobID;
+    cronString = '';
+    jobID;
 
     connectedCallback() {
         getJobState({
@@ -45,7 +45,6 @@ export default class SchedulerManager extends LightningModal {
         })
         .then(() => {
             this.jobID = undefined;
-            console.log("batch is aborted");
             this.dispatchEvent(new ShowToastEvent({
                 title: 'Batch',
                 message: 'Successfully aborted',

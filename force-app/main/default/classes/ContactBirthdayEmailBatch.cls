@@ -14,13 +14,8 @@ public class ContactBirthdayEmailBatch implements Database.Batchable<sObject> {
         emails.setTargetObjectIds(contactIds);
         emails.setTemplateId(emailTemplate.Id);
         List<Messaging.SendEmailResult> mresult = Messaging.SendEmail(New Messaging.MassEmailMessage[]{emails});
-        //test
-        // Boolean flag = mresult[0].isSuccess();
-        // System.debug('test');
     }
 
     public void finish(Database.BatchableContext BC) {
-        Integer emailsCount = [SELECT count() FROM EmailMessage]; 
-        System.debug(emailsCount);
     }
 }

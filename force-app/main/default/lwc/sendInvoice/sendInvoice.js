@@ -47,7 +47,7 @@ export default class SendInvoice extends NavigationMixin(LightningElement) {
             this.primaryContact = data;
             this.hasData = true;
         } else if (error) {
-            console.log('error', JSON.parse(JSON.stringify(error)));
+            console.log('error', error);
         }
     }
 

@@ -3,11 +3,12 @@
     <apiVersion>57.0</apiVersion>
     <isExposed>true</isExposed>
     <targets>
-        <target>lightning__RecordAction</target>
+        <target>lightning__RecordPage</target>
     </targets>
     <targetConfigs>
-        <targetConfig targets="lightning__RecordAction">
-            <actionType>ScreenAction</actionType>
-        </targetConfig> 
+        <targetConfig targets="lightning__RecordPage">
+            <property name="batchName" label="Batch Name" type="String" required="true"/>
+            <property name="schedulerName" label="Scheduler Name" type="String" required="true"/>
+        </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

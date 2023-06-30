@@ -105,6 +105,8 @@ public with sharing class OpportunityInvoiceExtension {
     @AuraEnabled
     public static void sendEmail(String emailBody, Id recordId){
         try {
+            Standard_Setting__mdt standardSetting = Standard_Setting__mdt.getInstance('Default_Setting');
+            Organization orgDetails = [SELECT Name FROM Organization WHERE Id = :UserInfo.getOrganizationId()];
             messaging.SingleEmailMessage mail = new messaging.SingleEmailMessage();
             Messaging.EmailFileAttachment attachedInvoice = new Messaging.EmailFileAttachment();
             ContentVersion attachedFile = getAttachedInvoice(recordId);
@@ -115,8 +117,8 @@ public with sharing class OpportunityInvoiceExtension {
             }
             String emailAddress = getPrimaryContact(recordId).Email;
             mail.setToAddresses(new String[]{emailAddress});
-            mail.setReplyTo('response_to_invoice@ur48b6vsqv80bajosqc4tkkwn68lur52xzfa6vou59qpnzvoq.2w-rpwhoeaj.ap16.apex.salesforce.com');
-            mail.setSenderDisplayName('SuccessMotors');
+            mail.setReplyTo(standardSetting.Inbound_Email__c);
+            mail.setSenderDisplayName(orgDetails.Name);
             mail.setSubject(getInvoiceNumber(recordId));
             mail.setHtmlBody(emailBody);
             Messaging.sendEmail(new List<messaging.SingleEmailMessage>{ mail });
