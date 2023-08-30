@@ -1,0 +1,19 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-modal-header label="List"></lightning-modal-header>
+    <lightning-modal-body>
+        <div style="height:400px">
+            <lightning-card variant="Narrow" title="Record Lookup" icon-name="standard:apps">
+                <div class="slds-p-horizontal_small">
+                    <c-multiselect-lookup objectname={objectname} fieldnames=" Id, Name, CreatedDate " params = " UndeletableByCascade__c = false "
+                        onselected={handleSelectedRecords} icon-name="standard:account" placeholder="Lookup Record...">
+                    </c-multiselect-lookup>
+                </div>
+            </lightning-card>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button variant="neutral" label="Close" onclick={closeWindow}></lightning-button>
+        <lightning-button variant="brand" label="Save" onclick={saveResult} class="slds-m-left_x-small"></lightning-button>
+    </lightning-modal-footer>
+</template>

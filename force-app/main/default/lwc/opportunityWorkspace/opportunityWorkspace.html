@@ -1,0 +1,56 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card title="Opportunities" icon-name="standard:account">
+            <div class="slds-var-m-around_medium">
+                <lightning-input 
+                    type="search" 
+                    onchange={handleSearchTermChange} 
+                    class="slds-var-m-bottom_small"          
+                    label="Search" 
+                    placeholder="Searching by opportunity name..."
+                    value={searchTerm}>
+                </lightning-input>
+                <template lwc:if={hasPermission}>
+                    <div class="slds-var-m-around_small">
+                        <lightning-button 
+                            label={buttonLabel} 
+                            icon-name="utility:delete" 
+                            disabled={isTrue}
+                            variant="destructive" 
+                            onclick={deleteRecords}>
+                        </lightning-button>
+                    </div>
+                </template>
+                <template lwc:if={hasData}>
+                    <div class="slds-scrollable" style="max-height:400px;">
+                        <template lwc:if={hasPermission}>
+                            <lightning-datatable  
+                                key-field="id"
+                                data={opportunities}
+                                onrowaction={handleRowAction}
+                                onrowselection={getSelectedRecords}
+                                columns={managerColumns}>
+                            </lightning-datatable>
+                        </template>
+                        <template lwc:else>
+                            <template lwc:if={hasData}>
+                                <div class="slds-scrollable" style="max-height:400px;">
+                                    <lightning-datatable  
+                                        key-field="id"
+                                        hide-checkbox-column
+                                        data={opportunities}
+                                        columns={employeeColumns}>
+                                    </lightning-datatable>
+                                </div>
+                            </template>
+                        </template>
+                    </div>   
+                </template>
+                <template lwc:else>
+                    <div class="slds-p-top_large slds-text-heading_medium slds-text-align_center">There are no records...</div>
+                </template>
+            </div>
+
+    
+    </lightning-card>
+</template>

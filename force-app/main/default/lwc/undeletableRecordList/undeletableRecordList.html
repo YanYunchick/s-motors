@@ -1,0 +1,44 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <template lwc:if={hasPermission}>
+        <lightning-card title="Undeletable By Cascade Records">
+            <div class="slds-p-around_small">
+                    <div style="width: 100px;">
+                        <lightning-combobox
+                            name="picklist"
+                            label="Record Type"
+                            value={baseType} 
+                            placeholder="Select Type"
+                            options={options}
+                            onchange={handleTypeChange} >
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-p-vertical_small">
+                        <lightning-button variant="neutral" label="Add" onclick={openAdd}></lightning-button>
+                    </div>
+                <template lwc:if={hasData}>
+                    <div class="slds-scrollable" style="max-height:400px;">
+                        <template lwc:if={isContact}>
+                            <lightning-datatable  
+                                key-field="id"
+                                data={contactList}
+                                hide-checkbox-column
+                                onrowaction={handleRowAction}
+                                columns={columns}>
+                            </lightning-datatable>
+                        </template>
+                        <template lwc:else>
+                            <lightning-datatable  
+                                key-field="id"
+                                data={accountList}
+                                hide-checkbox-column
+                                onrowaction={handleRowAction}
+                                columns={columns}>
+                            </lightning-datatable>
+                        </template>
+                    </div>   
+                </template>
+            </div>
+        </lightning-card>
+    </template>
+</template>
